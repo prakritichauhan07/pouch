@@ -34,7 +34,7 @@ critest::install() {
   local workdir pkg CRITOOLS_REPO
 
   pkg="github.com/kubernetes-sigs/cri-tools"
-  CRITOOLS_REPO="github.com/alibaba/cri-tools"
+  CRITOOLS_REPO="github.com/prakritichauhan07/cri-tools"
   workdir="${GOPATH}/src/${pkg}"
 
   if [ ! -d "${workdir}" ]; then
