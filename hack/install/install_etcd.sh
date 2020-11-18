@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ETCD_VERSION=v3.3.5
-ARCH=amd64
+ARCH=$(uname -m)
 
 # keep the first one only
 GOPATH="${GOPATH%%:*}"
@@ -26,10 +26,15 @@ etcd::check_version() {
 
 # etcd::install downloads the package and build.
 etcd::install() {
-  wget --quiet "https://github.com/coreos/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-${ARCH}.tar.gz"
-  tar -xf "etcd-${ETCD_VERSION}-linux-${ARCH}.tar.gz" -C "/usr/local"
-  rm etcd-${ETCD_VERSION}-linux-${ARCH}.tar.gz
-  export PATH="/usr/local/etcd-${ETCD_VERSION}-linux-${ARCH}:${PATH}"
+  if [[ "${ARCH}" == "aarch64" ]]; then
+    arch1="arm64"
+  else
+    arch1="amd64"
+  fi
+  wget --quiet "https://github.com/coreos/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-${arch1}.tar.gz"
+  tar -xf "etcd-${ETCD_VERSION}-linux-${arch1}.tar.gz" -C "/usr/local"
+  rm etcd-${ETCD_VERSION}-linux-${arch1}.tar.gz
+  export PATH="/usr/local/etcd-${ETCD_VERSION}-linux-${arch1}:${PATH}"
 }
 
 main() {
