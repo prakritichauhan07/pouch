@@ -1,9 +1,9 @@
-dist: xenial
+#dist: bionic
 sudo: required
 
 language: go
 go:
-  - 1.12.6
+  - 1.13.4
 
 go_import_path: github.com/alibaba/pouch
 
@@ -14,6 +14,18 @@ before_install:
       echo "travis does not run for document-only changed"
       exit
     }
+install:
+  - if [ "${TRAVIS_CPU_ARCH}" == "arm64" ]; then
+    wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/arm64/docker-ce_18.06.0~ce~3-0~ubuntu_arm64.deb;
+    sudo apt-get purge -y docker.io;
+    sudo apt-get autoclean;
+    sudo dpkg -i docker-ce_18.06.0~ce~3-0~ubuntu_arm64.deb;
+    else
+    wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.0~ce~3-0~ubuntu_amd64.deb;
+    sudo apt-get purge -y docker.io;
+    sudo apt-get autoclean;
+    sudo dpkg -i docker-ce_18.06.0~ce~3-0~ubuntu_amd64.deb;
+    fi
 
 notifications:
   webhooks:
@@ -24,27 +36,195 @@ notifications:
 
 jobs:
   include:
-    - stage: test
+    - dist: focal
+      arch: amd64
+      stage: test
+      install: skip
+      name: "Unit test"
+      script: ./travis_ci.sh unittest
+    - dist: focal
+      virt: vm
+      group: edge
+      arch: arm64-graviton2
+      install: skip
+      stage: test
       name: "Unit test"
       script: ./travis_ci.sh unittest
 
-    - stage: test
+    - dist: focal
+      arch: amd64
+      stage: test
+      install: skip
       name: "CRIv1alpha2 test"
-      script: ./travis_ci.sh criv1alpha2test
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev 
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - ./travis_ci.sh criv1alpha2test
+    - dist: focal
+      virt: vm
+      group: edge
+      arch: arm64-graviton2
+      install: skip
+      stage: test
+      name: "CRIv1alpha2 test"
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev 
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - ./travis_ci.sh criv1alpha2test
 
-    - stage: test
+    - arch: amd64
+      dist: focal
+      stage: test
       name: "Node e2e test"
-      script: ./travis_ci.sh nodee2etest
+      install: skip
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev 
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - sudo netstat -tulpn
+        - ./travis_ci.sh nodee2etest
+    - arch: arm64-graviton
+      dist: focal
+      virt: vm
+      group: edge
+      install: skip
+      stage: test
+      name: "Node e2e test"
+      script: 
+        - sudo apt-get install -y net-tools libbtrfs-dev
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - service docker status
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - service docker status
+        - sudo netstat -tulpn
+        - ./travis_ci.sh nodee2etest
 
-    - stage: test
+    - arch: amd64
+      dist: focal
+      stage: test 
       name: "Integration test 0"
-      script: ./travis_ci.sh integrationtest 4 0
-    - stage: test
+      install: skip
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - service docker status
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - service docker status
+        - ./travis_ci.sh integrationtest 4 0
+    - arch: arm64-graviton
+      dist: focal
+      virt: vm
+      group: edge
+      stage: test
+      name: "Integration test 0"
+      install: skip
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - service docker status
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - ./travis_ci.sh integrationtest 4 0
+    - arch: amd64
+      dist: focal
+      stage: test
       name: "Integration test 1"
-      script: ./travis_ci.sh integrationtest 4 1
-    - stage: test
+      install: skip
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - service docker status
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - service docker status
+        - ./travis_ci.sh integrationtest 4 1
+    - arch: arm64-graviton
+      dist: focal
+      virt: vm
+      group: edge
+      stage: test
+      name: "Integration test 1"
+      install: skip
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - service docker status
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - service docker status
+        - ./travis_ci.sh integrationtest 4 1  
+    - arch: amd64
+      dist: focal
+      stage: test
+      install: skip
       name: "Integration test 2"
-      script: ./travis_ci.sh integrationtest 4 2
-    - stage: test
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - service docker status
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - service docker status
+        - ./travis_ci.sh integrationtest 4 2
+    - arch: arm64-graviton
+      dist: focal
+      virt: vm
+      group: edge
+      stage: test
+      install: skip
+      name: "Integration test 2"
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - service docker status
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - service docker status
+        - ./travis_ci.sh integrationtest 4 2  
+    - arch: amd64
+      dist: focal
+      stage: test
+      install: skip
       name: "Integration test 3"
-      script: ./travis_ci.sh integrationtest 4 3
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - service docker status
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - service docker status
+        - ./travis_ci.sh integrationtest 4 3
+    - arch: arm64-graviton
+      dist: focal
+      virt: vm
+      group: edge
+      stage: test
+      install: skip
+      name: "Integration test 3"
+      script:
+        - sudo apt-get install -y net-tools libbtrfs-dev
+        - sudo mkdir -p /etc/systemd/system/docker.service.d
+        - sudo cp override.conf /etc/systemd/system/docker.service.d/override.conf
+        - service docker status
+        - sudo systemctl daemon-reload
+        - sudo systemctl restart docker
+        - service docker status
+        - ./travis_ci.sh integrationtest 4 3  
