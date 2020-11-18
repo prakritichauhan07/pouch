@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"path"
+	"runtime"
 	"strings"
 	"syscall"
 
@@ -79,7 +80,11 @@ func setupFlags(cmd *cobra.Command) {
 	flagSet.StringVar(&cfg.CriConfig.Listen, "listen-cri", "unix:///var/run/pouchcri.sock", "Specify listening address of CRI")
 	flagSet.StringVar(&cfg.CriConfig.NetworkPluginBinDir, "cni-bin-dir", "/opt/cni/bin", "The directory for putting cni plugin binaries.")
 	flagSet.StringVar(&cfg.CriConfig.NetworkPluginConfDir, "cni-conf-dir", "/etc/cni/net.d", "The directory for putting cni plugin configuration files.")
-	flagSet.StringVar(&cfg.CriConfig.SandboxImage, "sandbox-image", "registry.cn-hangzhou.aliyuncs.com/google-containers/pause-amd64:3.0", "The image used by sandbox container.")
+	if runtime.GOARCH == "arm64" {
+		flagSet.StringVar(&cfg.CriConfig.SandboxImage, "sandbox-image", "registry.cn-hangzhou.aliyuncs.com/google-containers/pause-arm64:3.0", "The image used by sandbox container.")
+	} else {
+		flagSet.StringVar(&cfg.CriConfig.SandboxImage, "sandbox-image", "registry.cn-hangzhou.aliyuncs.com/google-containers/pause-amd64:3.0", "The image used by sandbox container.")
+	}
 	flagSet.StringVar(&cfg.CriConfig.StreamServerPort, "stream-server-port", "10010", "The port stream server of cri is listening on.")
 	flagSet.BoolVar(&cfg.CriConfig.StreamServerReusePort, "stream-server-reuse-port", false, "Specify whether cri stream server share port with pouchd. If this is true, the listen option of pouchd should specify a tcp socket and its port should be same with stream-server-port.")
 	flagSet.IntVar(&cfg.CriConfig.CriStatsCollectPeriod, "cri-stats-collect-period", 10, "The time duration (in time.Second) cri collect stats from containerd.")
