@@ -7,6 +7,7 @@ source utils.sh
 
 cd ../../
 readonly REPO_BASE="$(pwd -P)"
+readonly arch=$(uname -m)
 
 # keep the first one only
 GOPATH="${GOPATH%%:*}"
@@ -58,7 +59,7 @@ integration::run_daemon_cri_test_e2e_cases() {
   local cri_runtime code KUBERNETES_VERSION
   cri_runtime=$1
 
-  KUBERNETES_VERSION="v1.16.3"
+  KUBERNETES_VERSION="v1.18.10"
   KUBERNETES_REPO="github.com/kubernetes/kubernetes"
   KUBERNETES_PATH="${GOPATH}/src/k8s.io/kubernetes"
   if [[ ! -d "${KUBERNETES_PATH}" ]]; then
@@ -108,7 +109,12 @@ integration::run_cri_e2e_test(){
   
   cmd="pouchd-integration"
   flags=" -test.coverprofile=${coverage_profile} DEVEL"
-  flags="${flags} --enable-cri --cri-version ${cri_runtime} --sandbox-image=gcr.io/google_containers/pause-amd64:3.0"
+  if [[ "${arch}" == "aarch64" ]]; then
+    arch1="arm64"
+  else
+    arch1="amd64"
+  fi
+  flags="${flags} --enable-cri --cri-version ${cri_runtime} --sandbox-image=gcr.io/google_containers/pause-${arch1}:3.0"
 
 
   integration::stop_local_persist
