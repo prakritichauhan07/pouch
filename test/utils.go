@@ -80,6 +80,14 @@ func SkipIfFalse(c *check.C, conditions ...VerifyCondition) {
 	}
 }
 
+// SkipIfTrue skips the suite, if any of the conditions is satisfied.
+func SkipIfTrue(c *check.C, conditions ...VerifyCondition) {
+	for _, con := range conditions {
+		if con() {
+			c.Skip("Skip test as condition is matched")
+		}
+	}
+}
 // IsTLSExist check if the TLS related file exists.
 func IsTLSExist() bool {
 	if _, err := os.Stat(serverCa); os.IsNotExist(err) {
