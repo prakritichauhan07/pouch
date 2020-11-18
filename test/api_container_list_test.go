@@ -32,6 +32,7 @@ func (suite *APIContainerListSuite) SetUpTest(c *check.C) {
 
 // TestListAll test api with -all parameters, empty filter.
 func (suite *APIContainerListSuite) TestListAll(c *check.C) {
+	SkipIfTrue(c, environment.IsArch)
 	containerA := "TestListAllContainerA"
 	resA := command.PouchRun("run", "-d", "--name", containerA, busyboxImage125, "top").Assert(c, icmd.Success)
 	defer DelContainerForceMultyTime(c, containerA)
@@ -78,6 +79,7 @@ func (suite *APIContainerListSuite) TestListFilterInvalid(c *check.C) {
 
 // TestListFilterInvalid test equal filter.
 func (suite *APIContainerListSuite) TestListFilterEqual(c *check.C) {
+	SkipIfTrue(c, environment.IsArch)
 	containerA := "TestListFilterEqualContainerA"
 	resA := command.PouchRun("run", "-d", "--name", containerA, "-l", "label="+containerA, busyboxImage125, "top").Assert(c, icmd.Success)
 	defer DelContainerForceMultyTime(c, containerA)
@@ -136,6 +138,7 @@ func (suite *APIContainerListSuite) TestListFilterEqual(c *check.C) {
 
 // TestListFilterUnEqual test label unequal filter.
 func (suite *APIContainerListSuite) TestListFilterUnEqual(c *check.C) {
+	SkipIfTrue(c, environment.IsArch)
 	containerA := "TestListFilterUnEqualContainerA"
 	resA := command.PouchRun("run", "-d", "--name", containerA, "-l", "label="+containerA, busyboxImage125, "top").Assert(c, icmd.Success)
 	defer DelContainerForceMultyTime(c, containerA)
