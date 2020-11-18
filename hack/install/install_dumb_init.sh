@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-readonly DUMB_INIT_VERSION="1.2.1"
+readonly DUMB_INIT_VERSION="1.2.2"
+readonly arch=$(uname -m)
 
 # dumb_init::check_version checks the command and the version.
 dumb_init::check_version() {
@@ -30,7 +31,12 @@ dumb_init::install() {
   target="/tmp/dumb-init"
 
   url="https://github.com/Yelp/dumb-init/releases/download"
-  url="${url}/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64"
+  if [[ "${arch}" == "aarch64" ]]; then
+    arch1="arm64"
+  else
+    arch1="x86_64"
+  fi
+  url="${url}/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_${arch1}"
 
   wget --quiet -O "${target}" "${url}"
   mv "${target}" /usr/bin/
