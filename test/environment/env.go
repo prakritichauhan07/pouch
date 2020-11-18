@@ -12,6 +12,13 @@ import (
 	"github.com/gotestyourself/gotestyourself/icmd"
 )
 
+func checkArch() string {
+	if runtime.GOARCH == "arm64" {
+		return "sha256:89a35e2ebb6b938201966889b5e8c85b931db6432c5643966116cd1c28bf45cd"
+	} else {
+		return "sha256:8c811b4aec35f259572d0f79207bc0678df4c736eeec50bc9fec37ed936a472a"
+	}
+}
 var (
 	// PouchBinary is default binary
 	PouchBinary = "/usr/local/bin/pouch"
@@ -35,7 +42,8 @@ var (
 	BusyboxDigest = "sha256:141c253bc4c3fd0a201d32dc1f493bcf3fff003b6df416dea4f41046e0f37d47"
 
 	// BusyboxID the default ID for busybox image
-	BusyboxID = "sha256:8c811b4aec35f259572d0f79207bc0678df4c736eeec50bc9fec37ed936a472a"
+	//BusyboxID = "sha256:8c811b4aec35f259572d0f79207bc0678df4c736eeec50bc9fec37ed936a472a"
+	BusyboxID = checkArch()
 
 	// Busybox125Tag the 1.25 tag used for 1.25 busybox image
 	Busybox125Tag = "1.25"
@@ -62,7 +70,7 @@ var (
 	CniRepo = "calico/cni"
 
 	// CniTag the tag for cni image
-	CniTag = "v3.1.3"
+	CniTag = "v3.11.3"
 
 	// GateWay default gateway for test
 	GateWay = "192.168.1.1"
@@ -176,6 +184,9 @@ func IsAliKernel() bool {
 }
 
 // IsDumbInitExist checks if the dumb-init binary exists on host.
+func IsArch() bool {
+	return runtime.GOARCH == "arm64"
+}
 func IsDumbInitExist() bool {
 	if _, err := os.Stat("/usr/bin/dumb-init"); err != nil && os.IsNotExist(err) {
 		return false
