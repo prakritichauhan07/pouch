@@ -7,6 +7,7 @@ source utils.sh
 
 cd ../../
 readonly REPO_BASE="$(pwd -P)"
+readonly arch=$(uname -m)
 
 # keep the first one only
 GOPATH="${GOPATH%%:*}"
@@ -80,7 +81,12 @@ integration::run_cri_test(){
 
   cmd="pouchd-integration"
   flags=" -test.coverprofile=${coverage_profile} DEVEL"
-  flags="${flags} --enable-cri --cri-version ${cri_runtime} --sandbox-image=gcr.io/google_containers/pause-amd64:3.0"
+  if [[ "${arch}" == "aarch64" ]]; then
+    arch1="arm64"
+  else
+    arch1="amd64"
+  fi
+  flags="${flags} --enable-cri --cri-version ${cri_runtime} --sandbox-image=gcr.io/google_containers/pause-${arch1}:3.0"
 
   integration::install_critest
 
