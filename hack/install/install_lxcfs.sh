@@ -50,7 +50,7 @@ lxcfs::centos::pull_build() {
 #
 # FIXME: It is 3.0.0 version which different with stable-2.0 in centos!!!!!!!
 lxcfs::ubuntu::install() {
-  add-apt-repository -y ppa:ubuntu-lxc/lxcfs-stable
+  #add-apt-repository -y ppa:ubuntu-lxc/lxcfs-stable
   apt-get update -q -y
   apt-get install -y -q lxcfs
 }
