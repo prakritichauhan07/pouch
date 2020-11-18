@@ -3,6 +3,7 @@
 set -euo pipefail
 
 readonly SWAGGER_VERSION=v0.19.0
+readonly arch=$(uname -m)
 
 # swagger::check_version checks the command and the version.
 swagger::check_version() {
@@ -27,7 +28,12 @@ swagger::install() {
   echo ">>>> install swagger-${SWAGGER_VERSION} <<<<"
   local url
   
-  url="https://github.com/go-swagger/go-swagger/releases/download/${SWAGGER_VERSION}/swagger_linux_amd64"
+  if [[ "${arch}" == "aarch64" ]]; then
+    arch1="arm64"
+  else
+    arch1="amd64"
+  fi
+  url="https://github.com/go-swagger/go-swagger/releases/download/${SWAGGER_VERSION}/swagger_linux_${arch1}"
 
   wget --quiet -O /usr/local/bin/swagger "${url}"
   chmod +x /usr/local/bin/swagger
