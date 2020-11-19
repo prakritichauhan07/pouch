@@ -257,6 +257,7 @@ func (suite *PouchRunVolumeSuite) TestRunWithVolumesFromWithDupclicate(c *check.
 // TestRunWithVolumesFromDifferentSources tests containers with volumes from different sources
 func (suite *PouchRunVolumeSuite) TestRunWithVolumesFromDifferentSources(c *check.C) {
 	// TODO: build the image with volume
+	SkipIfTrue(c, environment.IsArch)
 	imageWithVolume := "registry.hub.docker.com/shaloulcy/busybox:with-volume"
 	if environment.IsAliKernel() {
 		imageWithVolume = "reg.docker.alibaba-inc.com/pouch/busybox:with-volume"
