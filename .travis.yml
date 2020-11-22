@@ -137,6 +137,10 @@ jobs:
         - service docker status
         - sudo systemctl daemon-reload
         - sudo systemctl restart docker
+        - wget http://ports.ubuntu.com/pool/main/l/linux-hwe/linux-modules-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - sudo dpkg -i linux-modules-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - wget http://ports.ubuntu.com/pool/main/l/linux-signed-hwe/linux-image-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - sudo dpkg -i linux-image-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
         - ./travis_ci.sh integrationtest 4 0
     - arch: amd64
       dist: focal
@@ -167,6 +171,10 @@ jobs:
         - sudo systemctl daemon-reload
         - sudo systemctl restart docker
         - service docker status
+        - wget http://ports.ubuntu.com/pool/main/l/linux-hwe/linux-modules-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - sudo dpkg -i linux-modules-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - wget http://ports.ubuntu.com/pool/main/l/linux-signed-hwe/linux-image-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - sudo dpkg -i linux-image-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
         - ./travis_ci.sh integrationtest 4 1  
     - arch: amd64
       dist: focal
@@ -197,6 +205,10 @@ jobs:
         - sudo systemctl daemon-reload
         - sudo systemctl restart docker
         - service docker status
+        - wget http://ports.ubuntu.com/pool/main/l/linux-hwe/linux-modules-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - sudo dpkg -i linux-modules-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - wget http://ports.ubuntu.com/pool/main/l/linux-signed-hwe/linux-image-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - sudo dpkg -i linux-image-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
         - ./travis_ci.sh integrationtest 4 2  
     - arch: amd64
       dist: focal
@@ -227,4 +239,8 @@ jobs:
         - sudo systemctl daemon-reload
         - sudo systemctl restart docker
         - service docker status
+        - wget http://ports.ubuntu.com/pool/main/l/linux-hwe/linux-modules-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - sudo dpkg -i linux-modules-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - wget http://ports.ubuntu.com/pool/main/l/linux-signed-hwe/linux-image-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
+        - sudo dpkg -i linux-image-5.0.0-23-generic_5.0.0-23.24~18.04.1_arm64.deb
         - ./travis_ci.sh integrationtest 4 3  
